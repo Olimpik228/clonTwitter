@@ -1,4 +1,4 @@
-package com.example.cloneTwitter;
+package com.example.cloneTwitter.controller;
 
 import com.example.cloneTwitter.domain.Message;
 import com.example.cloneTwitter.repos.MessageRepo;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @Controller
-public class GreetingController {
+public class MainController {
     @Autowired
     private MessageRepo messageRepo;
 
