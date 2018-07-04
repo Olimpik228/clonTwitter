@@ -1,14 +1,17 @@
 package com.example.cloneTwitter.controller;
 
 import com.example.cloneTwitter.domain.Message;
+import com.example.cloneTwitter.domain.User;
 import com.example.cloneTwitter.repos.MessageRepo;
 import com.sun.org.apache.xml.internal.serializer.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.Map;
 
 
@@ -34,8 +37,11 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model) {
+        Message message = new Message(text, tag, user);
 
         messageRepo.save(message);
 
