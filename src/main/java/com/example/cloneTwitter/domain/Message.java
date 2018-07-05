@@ -2,7 +2,7 @@ package com.example.cloneTwitter.domain;
 import javax.persistence.*;
 
 
-@Entity
+@Entity //This tells Hibernate to make a table out of this class
 public class Message {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

@@ -7,18 +7,18 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
-@Entity
-@Table(name="usr")
+@Entity //This tells Hibernate to make a table out of this class
+@Table(name="usr") //name Table
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO) //auto increment
     private Long id;
     private String username;
     private String password;
     private boolean active;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id")) // сязь OneToMany, айди юзера с его статусом в таблице роли, создает таблицу роли
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 

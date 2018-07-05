@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Collections;
 import java.util.Map;
 
+//@Controller Listens for requests on the specified path and returns data
 @Controller
 public class RegistrationController {
     @Autowired
