@@ -4,6 +4,7 @@ import com.example.cloneTwitter.domain.Role;
 import com.example.cloneTwitter.domain.User;
 import com.example.cloneTwitter.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,13 +26,17 @@ public class UserSevice implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${hostname}")
+    private String hostname;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
 
-        if(user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
+
         return user;
     }
 
@@ -58,8 +63,9 @@ public class UserSevice implements UserDetailsService {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Sweater. Please, visit next link: http://localhost:8080/activate/%s",
+                            "Welcome to Sweater. Please, visit next link: http://%s/activate/%s",
                     user.getUsername(),
+                    hostname,
                     user.getActivationCode()
             );
 
@@ -85,33 +91,20 @@ public class UserSevice implements UserDetailsService {
         return userRepo.findAll();
     }
 
-    public void saveUser(User user, String username, Map<String,String> form) {
-        user.setUsername(username);           // устанавливаем пользователю имя, которое пришло с фронта
-        //берем все существующие в приложении роли,
-        // преобразуем массив этих ролей в стрим (java stream api),
-        // где получаем имена ролей и полученый список имён складываем в set
+    public void saveUser(User user, String username, Map<String, String> form) {
+        user.setUsername(username);
+
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
                 .collect(Collectors.toSet());
 
-        user.getRoles().clear(); //очищаем персистентную коллекцию от установленных ролей
-//обходим список полей, пришедших от пользователя,
-// проверяем, если имя какого-то поля является именем роли,
-// то ищем такую роль в enum Role и устанавливаем эти роли пользователю.
+        user.getRoles().clear();
+
         for (String key : form.keySet()) {
-            if(roles.contains(key)){
+            if (roles.contains(key)) {
                 user.getRoles().add(Role.valueOf(key));
             }
-
         }
-        //Почему так:
-        // 1) коллекции у объектов, полученных через JPA не являются обычными коллекциями,
-        // их нельзя просто заменить, можно только обновлять.
-        // 2) чтобы не городить каких-то сложных проверок, мы просто берем всё поля,
-        // полученные от пользователя и проверяем, являются ли они ролями,
-        // если да - устанавливаем их пользователю,
-        // обновляя таким образом нашу персистентную коллекцию ролей﻿
-
 
         userRepo.save(user);
     }

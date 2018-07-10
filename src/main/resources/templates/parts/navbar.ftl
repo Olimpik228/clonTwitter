@@ -10,24 +10,29 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Home </a>
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <#if user??>
+            <li class="nav-item">
+                <a class="nav-link" href="/main">Messages</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/main">Messages </a>
+                <a class="nav-link" href="/user-messages/${currentUserId}">My messages</a>
             </li>
-            <#if isAdmin>
-            <li class="nav-item">
-                <a class="nav-link" href="/user">User list </a>
-            </li>
-            </#if>
-        <#if user??>
+        </#if>
+        <#if isAdmin>
         <li class="nav-item">
-            <a class="nav-link" href="/user/profile">Profile </a>
+            <a class="nav-link" href="/user">User list</a>
         </li>
     </#if>
-        </ul>
+    <#if user??>
+    <li class="nav-item">
+        <a class="nav-link" href="/user/profile">Profile</a>
+    </li>
+</#if>
+</ul>
 
-        <div class="navbar-text mr-3">${name}</div>
-        <@l.logout />
-    </div>
+<div class="navbar-text mr-3">${name}</div>
+<@l.logout />
+</div>
 </nav>
